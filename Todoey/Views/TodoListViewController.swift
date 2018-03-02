@@ -70,22 +70,27 @@ class TodoListViewController: UITableViewController {
         
         itemArray[indexPath.row].done = !itemArray[indexPath.row].done //same as the followings
         
-        
 //        if itemArray[indexPath.row].done == false {
 //            itemArray[indexPath.row].done = true
 //        } else {
 //            itemArray[indexPath.row].done = false
 //        }
-        
-        saveItems()
+
         
 //        tableView.reloadData()
 
+        let cell = tableView.cellForRow(at: indexPath)
+        let item = itemArray[indexPath.row]
+        
+        cell?.accessoryType = item.done ? .checkmark : .none
+        
 //        if tableView.cellForRow(at: indexPath)?.accessoryType == .checkmark {
 //            tableView.cellForRow(at: indexPath)?.accessoryType = .none
 //        } else {
 //            tableView.cellForRow(at: indexPath)?.accessoryType = .checkmark
 //        }
+//
+        saveItems()
         
         tableView.deselectRow(at: indexPath, animated: true)
         
@@ -147,6 +152,7 @@ class TodoListViewController: UITableViewController {
     func loadItems() {
         if let data = try? Data(contentsOf: dataFilePath!) {
             let decoder = PropertyListDecoder()
+            
             do {
                 itemArray = try decoder.decode([Item].self, from: data)
             } catch {
