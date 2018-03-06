@@ -11,7 +11,7 @@ import CoreData
 
 class CategoryViewController: UITableViewController {
 
-    var categoryArray = [Category]()
+    var categories = [Category]()
     let context = (UIApplication.shared.delegate as! AppDelegate).persistentContainer.viewContext
     
     override func viewDidLoad() {
@@ -25,8 +25,12 @@ class CategoryViewController: UITableViewController {
     
     //MARK: - TableView Datasource Methods
     
+    
+    
+    
+    
     override func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
-        return categoryArray.count
+        return categories.count
     }
     
     
@@ -35,13 +39,26 @@ class CategoryViewController: UITableViewController {
         
         let cell = tableView.dequeueReusableCell(withIdentifier: "CategoryCell", for: indexPath)
 
-        cell.textLabel?.text = categoryArray[indexPath.row].name
+        cell.textLabel?.text = categories[indexPath.row].name
         
         return cell
         
     }
     
+    //MARK: - TableView Delegate Methods
     
+    override func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
+        performSegue(withIdentifier: "goToItems", sender: self)
+    }
+    
+    
+    override func prepare(for segue: UIStoryboardSegue, sender: Any?) {
+        let destinationVC = segue.destination as! TodoListViewController
+        
+        if let indexPath = tableView.indexPathForSelectedRow {
+            destinationVC.selectedCategory = categories[indexPath.row]
+        }
+    }
 
     
     
@@ -63,7 +80,7 @@ class CategoryViewController: UITableViewController {
         let request : NSFetchRequest<Category> = Category.fetchRequest()
         
         do {
-            categoryArray = try context.fetch(request)
+            categories = try context.fetch(request)
         } catch {
             print("Error loading context \(error)")
         }
@@ -85,7 +102,7 @@ class CategoryViewController: UITableViewController {
             let newCategory = Category(context: self.context)
             newCategory.name = textField.text!
             
-            self.categoryArray.append(newCategory)
+            self.categories.append(newCategory)
             
             self.saveCategories()
             
@@ -109,11 +126,7 @@ class CategoryViewController: UITableViewController {
     
     
     
-    //MARK: - TableView Delegate Methods
-    
-    override func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
-        tableView.deselectRow(at: indexPath, animated: true)
-    }
+
     
     
     
