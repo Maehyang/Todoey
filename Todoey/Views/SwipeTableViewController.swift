@@ -1,5 +1,5 @@
 //
-//  SwipeTebleViewController.swift
+//  SwipeTableViewController.swift
 //  Todoey
 //
 //  Created by Maehyang Lee on 2018. 3. 9..
@@ -22,7 +22,6 @@ class SwipeTableViewController: UITableViewController, SwipeTableViewCellDelegat
     
     override func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
        let cell = tableView.dequeueReusableCell(withIdentifier: "Cell", for: indexPath) as! SwipeTableViewCell
-        
         cell.delegate = self
         
         return cell
@@ -33,24 +32,29 @@ class SwipeTableViewController: UITableViewController, SwipeTableViewCellDelegat
         guard orientation == .right else { return nil }
     
         let deleteAction = SwipeAction(style: .destructive, title: "Delete") { action, indexPath in
-            
-        self.updateModel(at: indexPath)
-
-            }
-    
+            self.updateModel(at: indexPath)
+        }
+        
+        let editAction = SwipeAction(style: .default, title: "Edit") { (action, indexPath) in
+            self.editActionAlert(at: indexPath)
+        }
+        
+        
     // customize the action appearance
         deleteAction.image = UIImage(named: "delete-icon")
         
-        return [deleteAction]
+        return [deleteAction, editAction]
     }
     
+    //Edit Action Alert model
     
+    func editActionAlert(at indexPath: IndexPath) {
+        
+}
+
     func updateModel(at indexPath: IndexPath) {
         // Update our data model
     }
-
+    
 }
-
-
-
 

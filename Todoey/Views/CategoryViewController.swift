@@ -11,7 +11,7 @@ import RealmSwift
 import ChameleonFramework
 
 class CategoryViewController: SwipeTableViewController {
-
+    
     let realm = try! Realm()
     var categories: Results<Category>?
     
@@ -104,7 +104,39 @@ class CategoryViewController: SwipeTableViewController {
     }
     
     
+    //MARK - Edit Data From Swipe
     
+    override func editActionAlert(at indexPath: IndexPath) {
+            var textTield = UITextField()
+            let alert = UIAlertController(title: "Edit Category", message: "", preferredStyle: .alert)
+            let alertAction = UIAlertAction(title: "Edit", style: .destructive) { (action) in
+                if let categoryForEdit = self.categories?[indexPath.row] {
+                    
+                    do {
+                        try self.realm.write {
+                            categoryForEdit.name = textTield.text!
+                        }
+                    } catch {
+                        print("Error editing name, \(error)")
+                    }
+                }
+                
+                self.tableView.reloadData()
+        }
+        
+        alert.addTextField { (alertTextfield) in
+            alertTextfield.text = self.categories![indexPath.row].name
+            textTield = alertTextfield
+        }
+        
+        alert.addAction(alertAction)
+        present(alert, animated: true, completion: nil)
+        
+        
+        
+    }
+        
+
     
     //MARK: - Add New Categories
     

@@ -61,14 +61,11 @@ class TodoListViewController: SwipeTableViewController {
 //        let cell = tableView.dequeueReusableCell(withIdentifier: "ToDoItemCell", for: indexPath)
         
         if let item = todoItems?[indexPath.row] {
-
             cell.textLabel?.text = item.title
-            
             
             if let color = UIColor(hexString: selectedCategory!.color)?.darken(byPercentage: CGFloat(indexPath.row) / CGFloat(todoItems!.count)) {
                 cell.backgroundColor = color
                 cell.textLabel?.textColor = ContrastColorOf(color, returnFlat: true)
-            
             }
             
 //            print("version 1: \(CGFloat(indexPath.row / todoItems!.count))")
@@ -177,6 +174,37 @@ class TodoListViewController: SwipeTableViewController {
             }
         }
     
+    //MARK - Edite Data From Swipe
+    
+    override func editActionAlert(at indexPath: IndexPath) {
+        
+        var textTield = UITextField()
+        let alert = UIAlertController(title: "Edit Item", message: "", preferredStyle: .alert)
+        let alertAction = UIAlertAction(title: "Edit", style: .destructive) { (action) in
+            if let itemForEdit = self.todoItems?[indexPath.row] {
+                
+                do {
+                    try self.realm.write {
+                        itemForEdit.title = textTield.text!
+                    }
+                } catch {
+                    print("Error editing title, \(error)")
+                }
+            }
+            
+            self.tableView.reloadData()
+        }
+        
+        alert.addTextField { (alertTextfield) in
+            alertTextfield.text = self.todoItems![indexPath.row].title
+            textTield = alertTextfield
+        }
+        
+        alert.addAction(alertAction)
+        present(alert, animated: true, completion: nil)
+        
+    }
+
 }
 
 
